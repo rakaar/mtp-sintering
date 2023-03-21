@@ -5,6 +5,9 @@ t_max = 10;
 dt = 0.01;
 t_durn = 0:dt:t_max;
 
+% order of penetration
+order =  1;
+
 % particle params
 m = 1;
 k=1;
@@ -53,7 +56,7 @@ vy(1,1) = rand;
 vy(2,1) = rand;
     t=2;
     d = sqrt( (x(1,t-1) - x(2,t-1))^2  +  (y(1,t-1) - y(2,t-1))^2 );
-    force_e = k*d;
+    force_e = k*(d^order);
     dx = ( x(1,t-1) - x(2,t-1) );
     dy = ( y(1,t-1) - y(2,t-1) );
     force_e_x(t-1) = force_e*(abs(dx)/d);
@@ -100,7 +103,10 @@ for t=2:length(t_durn)
     v2n = v2x*unit_vec(1) + v2y*unit_vec(2);
     vrn = v1n - v2n;
     vrn_vec(t) = vrn;
-    force_d = damping_frac*sqrt(2*m*k)*vrn;
+%     force_d = damping_frac*sqrt(2*m*k)*vrn;
+% according to other paper, so that penetration power can be kept at both
+% terms
+    force_d = damping_frac*(d^order)*sqrt(2*m*k)*vrn;
     force_d_x(t) = force_d*(abs(dx)/d);
     force_d_y(t) = force_d*(abs(dy)/d);
 
@@ -116,28 +122,17 @@ for t=2:length(t_durn)
 end
 
 %%
-figure
-    plot(sqrt(force_e_x.^2 + force_e_y.^2))
-    xlim([0, tstop])
-    title('force e')
-
-figure
-     plot(sqrt(force_d_x.^2 + force_d_y.^2))
-    xlim([0, tstop])
-     title('force d')
-
 
     figure
         plot(sqrt( (force_e_x + force_d_x).^2 + (force_e_y + force_d_y).^2  ))
         xlim([0, tstop])
-        title('total force')
-  %%
-  figure
-    plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ) )
+    hold on
+      plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ) )
+    hold off
     xlim([0, tstop])
-    title('dist')
-  %% 
-  figure
+    legend('force ','dist')
+
+    figure
     plot(vrn_vec)
     xlim([0, tstop])
     title('vrn')
