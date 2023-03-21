@@ -6,7 +6,7 @@ dt = 0.01;
 t_durn = 0:dt:t_max;
 
 % order of penetration
-order =  1;
+order =  2;
 
 % particle params
 m = 1;

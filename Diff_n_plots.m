@@ -122,4 +122,15 @@ hold on
  plot(sqrt( (force_e_x + force_d_x).^2 + (force_e_y + force_d_y).^2  ))
  
  end% end of order
-    legend(strsplit(num2str(-0.5:0.5:3)))
+    plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ), 'LineWidth',3 )
+    plot(vrn_vec,'LineWidth',3)
+
+    legend([strsplit(num2str(-0.5:0.5:3)), 'dist', 'vrn'])
+    ylim([0, 5])
+%     xlim([0. 5])
+    title('forces')
+    hold off
+
+    
+
+ 
