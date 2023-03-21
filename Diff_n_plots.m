@@ -5,8 +5,6 @@ t_max = 10;
 dt = 0.01;
 t_durn = 0:dt:t_max;
 
-% order of penetration
-order =  1;
 
 % particle params
 m = 1;
@@ -54,9 +52,9 @@ vx(2,1) = rand;
 
 vy(1,1) = rand;
 vy(2,1) = rand;
-    t=2;
+    t=2; ord = 1;
     d = sqrt( (x(1,t-1) - x(2,t-1))^2  +  (y(1,t-1) - y(2,t-1))^2 );
-    force_e = k*(d^order);
+    force_e = k*(d^ord);
     dx = ( x(1,t-1) - x(2,t-1) );
     dy = ( y(1,t-1) - y(2,t-1) );
     force_e_x(t-1) = force_e*(abs(dx)/d);
@@ -74,17 +72,20 @@ vy(2,1) = rand;
     vrn = v1n - v2n;
     vrn_vec(t-1) = vrn;
 
-    force_d = damping_frac*sqrt(2*m*k)*vrn;
+    %     force_d = damping_frac*sqrt(2*m*k)*vrn;
+% according to other paper, so that penetration power can be kept at both
+% terms
+    force_d = damping_frac*(d^ord)*sqrt(2*m*k)*vrn;
     force_d_x(t-1) = force_d*(abs(dx)/d);
     force_d_y(t-1) = force_d*(abs(dy)/d);
 figure
 hold on
- for order=-0.5:0.5:3
+ for ord=-0.5:0.5:3
  
  for t=2:length(t_durn)
     d = sqrt( (x(1,t-1) - x(2,t-1))^2  +  (y(1,t-1) - y(2,t-1))^2 );
    
-    force_e = k*d;
+    force_e = k*(d^ord);
     dx = ( x(1,t-1) - x(2,t-1) );
     dy = ( y(1,t-1) - y(2,t-1) );
     force_e_x(t) = force_e*(abs(dx)/d);
@@ -105,7 +106,7 @@ hold on
 %     force_d = damping_frac*sqrt(2*m*k)*vrn;
 % according to other paper, so that penetration power can be kept at both
 % terms
-    force_d = damping_frac*(d^order)*sqrt(2*m*k)*vrn;
+    force_d = damping_frac*(d^ord)*sqrt(2*m*k)*vrn;
     force_d_x(t) = force_d*(abs(dx)/d);
     force_d_y(t) = force_d*(abs(dy)/d);
 
@@ -121,7 +122,7 @@ hold on
  end % t
  plot(sqrt( (force_e_x + force_d_x).^2 + (force_e_y + force_d_y).^2  ))
  
- end% end of order
+ end% end of ord
     plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ), 'LineWidth',3 )
     plot(vrn_vec,'LineWidth',3)
 
