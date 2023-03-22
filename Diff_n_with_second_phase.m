@@ -8,7 +8,7 @@ t_durn = 0:dt:t_max;
 
 % particle params
 m = 1;
-k=0.5;
+k=0.75;
 damping_frac = 0.5;
 R = 10;
 
