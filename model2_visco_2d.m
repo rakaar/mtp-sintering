@@ -4,7 +4,7 @@ dt = 0.01;
 t_durn = 0:dt:1;
 
 % params
-R = 1;
+R = 10;
 m = 1;
 
 % initial vals
@@ -49,8 +49,8 @@ vy(2,1) = rand;
 
 % diff_coef = 3.832e-29;
 % atomic_vol = 1.18e-29;
-diff_coef = 3.832e-29;
-atomic_vol = 1.18e-9;
+diff_coef = 3.832e-19;
+atomic_vol = 1.18e-1;
 surface_energy = 1.72;
 dihedral_angle = 146*(pi/180); % radians
 density = 8920;

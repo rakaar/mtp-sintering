@@ -12,6 +12,14 @@ k=1;
 damping_frac = 0.8;
 R = 10;
 
+% 
+diff_coef = 3.832e-19;
+atomic_vol = 1.18e-1;
+surface_energy = 1.72;
+dihedral_angle = 146*(pi/180); % radians
+density = 8920;
+kT = 1.38e-23*1e3;
+
 % initial vals
 x = zeros(n_particles,length(t_durn));
 y = zeros(n_particles,length(t_durn));
@@ -26,6 +34,9 @@ force_e_y = zeros(1,length(t_durn));
 
 force_d_x = zeros(1,length(t_durn));
 force_d_y = zeros(1,length(t_durn));
+
+force_total_x = zeros(1,length(t_durn));
+force_total_y = zeros(1,length(t_durn));
 
 % intialise
 x(1,1) = rand;
@@ -78,6 +89,9 @@ vy(2,1) = rand;
     force_d = damping_frac*(d^ord)*sqrt(2*m*k)*vrn;
     force_d_x(t-1) = force_d*(abs(dx)/d);
     force_d_y(t-1) = force_d*(abs(dy)/d);
+
+    force_total_x(t-1) = force_e_x(t-1) + force_d_x(t-1);
+    force_total_y(t-1) = force_e_y(t-1) + force_d_y(t-1);
 figure
 hold on
  for ord=-0.5:0.5:3
@@ -110,6 +124,9 @@ hold on
     force_d_x(t) = force_d*(abs(dx)/d);
     force_d_y(t) = force_d*(abs(dy)/d);
 
+    force_total_x(t) = force_e_x(t) + force_d_x(t);
+    force_total_y(t) = force_e_y(t) + force_d_y(t);
+
     for n=1:n_particles
         vx(n,t) =  vx(n,t-1)+ (  (-1^n)*(force_e_x(t) + force_d_x(t))/m   )*dt;
         vy(n,t) =  vy(n,t-1) + (  (-1^n)*(force_e_y(t) + force_d_y(t))/m   )*dt;
@@ -120,7 +137,8 @@ hold on
         y(n,t) = y(n,t-1) + vy(n,t)*dt;
     end
  end % t
- plot(sqrt( (force_e_x + force_d_x).^2 + (force_e_y + force_d_y).^2  ))
+%  plot(sqrt( (force_e_x + force_d_x).^2 + (force_e_y + force_d_y).^2  ))
+ plot(sqrt( (force_total_x).^2 + (force_total_y).^2  ))
  
  end% end of ord
     plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ), 'LineWidth',3 )
