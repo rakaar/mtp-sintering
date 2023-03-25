@@ -9,13 +9,13 @@ t_durn = 0:dt:t_max;
 % particle params
 m = 1;
 k=0.75;
-damping_frac = 0.5;
+damping_frac = 0.9;
 R = 10;
 
 % 
 diff_coef = 3.832e-10;
 atomic_vol = 1.18e-7;
-surface_energy = 0.01;
+surface_energy = 2.5*0.01;
 dihedral_angle = 146*(pi/180); % radians
 density = 8920;
 kT = 1.38e-23*1e3;
@@ -216,7 +216,7 @@ v_forces_all_order(ord*2 + 2,:) = sqrt( (force_v_x).^2 + (force_v_y).^2  );
  end% end of ord
     plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ), 'LineWidth',3 )
     plot(vrn_vec,'LineWidth',3)
-
+    yline(2)
     legend([strsplit(num2str(-0.5:0.5:3)), 'dist', 'vrn'])
 %     ylim([0, 5])
 %     xlim([0. 5])
