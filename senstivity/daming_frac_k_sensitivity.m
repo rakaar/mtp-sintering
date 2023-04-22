@@ -1,5 +1,5 @@
 clear all
-close all
+% close all
 n_particles = 2;
 t_max = 10;
 dt = 0.01;
@@ -223,7 +223,8 @@ end % end of param
 figure
     imagesc(force_at_single_t)
     title('c k change')
-
+    xlabel('k', 'FontSize',20)
+    ylabel('c', 'FontSize',20)
 
 
 

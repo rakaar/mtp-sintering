@@ -2,7 +2,7 @@ clear all
 close all
 n_particles = 2;
 t_max = 10;
-dt = 0.01;
+dt = 0.01;  
 t_durn = 0:dt:t_max;
 
 

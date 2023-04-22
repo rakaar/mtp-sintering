@@ -1,5 +1,5 @@
 clear all
-close all
+% close all
 n_particles = 2;
 t_max = 10;
 dt = 0.01;

@@ -129,10 +129,10 @@ end
     hold on
       plot( sqrt( (x(1,:)-x(2,:)).^2 + (y(1,:)-y(2,:)).^2 ) )
     hold off
-    xlim([0, tstop])
+%     xlim([0, tstop])
     legend('force ','dist')
 
     figure
     plot(vrn_vec)
-    xlim([0, tstop])
+%     xlim([0, tstop])
     title('vrn')
