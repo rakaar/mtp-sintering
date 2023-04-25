@@ -22,6 +22,8 @@ force_v_y = zeros(1,length(t_durn));
 force_s_x = zeros(1,length(t_durn));
 force_s_y = zeros(1,length(t_durn));
 
+all_force_diff_param = [];
+
 a_vec = [];
 % intialise
 x(1,1) = rand;
@@ -94,51 +96,59 @@ a = zeros(1,length(t_durn));
     force_s = pi*(surface_energy)*(4*R*( 1 - 0.5*cos(dihedral_angle/2) ) + a(t-1)*sin(dihedral_angle/2) );
     force_s_x(t-1) = force_s*(abs(dx)/d);
     force_s_y(t-1) = force_s*(abs(dy)/d);
-    
-for t=2:length(t_durn)
-    d = sqrt( (x(1,t-1) - x(2,t-1))^2  +  (y(1,t-1) - y(2,t-1))^2 );
-    force_v = (pi*(a(t-1)^4))/(8*((diff_coef*atomic_vol)/(kT)));
-    dx = ( x(1,t-1) - x(2,t-1) );
-    dy = ( y(1,t-1) - y(2,t-1) );
-    force_v_x(t) = force_v*(abs(dx)/d);
-    force_v_y(t) = force_v*(abs(dy)/d);
+  
+%   param_range = linspace(1,2,10);
+  param_range = linspace(144*(pi/180),148*(pi/180),10);
+
+  for param=param_range
+      dihedral_angle = param;
+      for t=2:length(t_durn)
+          d = sqrt( (x(1,t-1) - x(2,t-1))^2  +  (y(1,t-1) - y(2,t-1))^2 );
+          force_v = (pi*(a(t-1)^4))/(8*((diff_coef*atomic_vol)/(kT)));
+          dx = ( x(1,t-1) - x(2,t-1) );
+          dy = ( y(1,t-1) - y(2,t-1) );
+          force_v_x(t) = force_v*(abs(dx)/d);
+          force_v_y(t) = force_v*(abs(dy)/d);
 
 
-    v1x = vx(1,t-1);
-    v1y = vy(1,t-1);
+          v1x = vx(1,t-1);
+          v1y = vy(1,t-1);
 
-    v2x = vx(2,t-1);
-    v2y = vy(2,t-1);
+          v2x = vx(2,t-1);
+          v2y = vy(2,t-1);
 
-    unit_vec = [-dx, -dy]./d;
-    v1n = v1x*unit_vec(1) + v1y*unit_vec(2);
-    v2n = v2x*unit_vec(1) + v2y*unit_vec(2);
-    vrn = -v1n + v2n;
-    vrn_vec(t) = vrn;
-    force_s = pi*(surface_energy)*(4*R*( 1 - 0.5*cos(dihedral_angle/2) ) + a(t-1)*sin(dihedral_angle/2) );
-    force_s_x(t) = force_s*(abs(dx)/d);
-    force_s_y(t) = force_s*(abs(dy)/d);
+          unit_vec = [-dx, -dy]./d;
+          v1n = v1x*unit_vec(1) + v1y*unit_vec(2);
+          v2n = v2x*unit_vec(1) + v2y*unit_vec(2);
+          vrn = -v1n + v2n;
+          vrn_vec(t) = vrn;
+          force_s = pi*(surface_energy)*(4*R*( 1 - 0.5*cos(dihedral_angle/2) ) + a(t-1)*sin(dihedral_angle/2) );
+          force_s_x(t) = force_s*(abs(dx)/d);
+          force_s_y(t) = force_s*(abs(dy)/d);
 
-    for n=1:n_particles
-        vx(n,t) =  vx(n,t-1) +  (  (force_v_x(t) + force_s_x(t))/m   )*dt;
-        vy(n,t) =  vy(n,t-1) + (  (force_v_y(t) + force_s_y(t))/m   )*dt;
-    end
-    
-    for n=1:n_particles
-        x(n,t) = x(n,t-1) + vx(n,t)*dt;
-        y(n,t) = y(n,t-1) + vy(n,t)*dt;
-    end
-%     if a(t-1)^2 -  2*R*vrn*dt < 0
-%         disp(['f=', num2str(a(t-1)^2),' ' ,num2str(2*R*vrn*dt)])
-%         disp(a(t-1)^2 -  2*R*vrn*dt)
-%     end
-    a(t) = sqrt(abs(a(t-1)^2 -  2*R*vrn*dt));
-    a_vec = [a_vec a(t)];
-%     if a(t-1)^2 -  2*R*vrn*dt < 0
-%         disp('return')
-%         return
-%     end
-end
+          for n=1:n_particles
+              vx(n,t) =  vx(n,t-1) +  (  (force_v_x(t) + force_s_x(t))/m   )*dt;
+              vy(n,t) =  vy(n,t-1) + (  (force_v_y(t) + force_s_y(t))/m   )*dt;
+          end
+
+          for n=1:n_particles
+              x(n,t) = x(n,t-1) + vx(n,t)*dt;
+              y(n,t) = y(n,t-1) + vy(n,t)*dt;
+          end
+          %     if a(t-1)^2 -  2*R*vrn*dt < 0
+          %         disp(['f=', num2str(a(t-1)^2),' ' ,num2str(2*R*vrn*dt)])
+          %         disp(a(t-1)^2 -  2*R*vrn*dt)
+          %     end
+          a(t) = sqrt(abs(a(t-1)^2 -  2*R*vrn*dt));
+          a_vec = [a_vec a(t)];
+          %     if a(t-1)^2 -  2*R*vrn*dt < 0
+          %         disp('return')
+          %         return
+          %     end
+      end % t
+      all_force_diff_param = [all_force_diff_param; sqrt((force_v_x + force_s_x).^2 + (force_v_y + force_s_y).^2)];
+  end % param
+
 
 %%
 figure
@@ -161,3 +171,16 @@ figure
 figure
     plot(a_vec)
     title('neck radius')
+    %%
+  figure
+    imagesc(all_force_diff_param)
+    colorbar
+    ylabel('Parameter Range');
+yLabels = round(param_range,2);
+
+% Update the Y-axis ticks and labels
+ax = gca;
+ax.YTick = 1:numel(yLabels);
+ax.YTickLabel = yLabels;
+xlabel('Time')
+title('For different values of dihedral angle')
